@@ -10,12 +10,19 @@ import (
 	"github.com/ziutek/syslog"
 )
 
+var hostname string
+
 type handler struct {
 	*syslog.BaseHandler
 }
 
 func newHandler() *handler {
-	h := handler{syslog.NewBaseHandler(5, func(m *syslog.Message) bool { return true }, false)}
+	h := handler{syslog.NewBaseHandler(5, func(m *syslog.Message) bool {
+		if m.Hostname != hostname {
+			return true
+		}
+		return false
+	}, false)}
 	go h.mainLoop()
 	return &h
 }
@@ -26,12 +33,14 @@ func (h *handler) mainLoop() {
 		if m == nil {
 			break
 		}
+
 		fmt.Println(m)
 	}
 	h.End()
 }
 
 func main() {
+	hostname, _ = os.Hostname()
 	flag.Parse()
 	s := syslog.NewServer()
 	s.AddHandler(newHandler())
