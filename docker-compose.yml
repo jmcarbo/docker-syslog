@@ -1,0 +1,12 @@
+dockersyslog:
+  image: jmcarbo/docker-syslog
+  ports:
+    - 55555:1514/udp
+  command: 0.0.0.0:1514
+logspout:
+  image: progrium/logspout
+  ports:
+    - 8000:8000
+  volumes:
+    - /var/run/docker.sock:/tmp/docker.sock
+  command: syslog://192.168.59.103:55555
