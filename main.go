@@ -3,14 +3,15 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/ziutek/syslog"
 	"os"
 	"os/signal"
+	"regexp"
 	"syscall"
-
-	"github.com/ziutek/syslog"
 )
 
 var hostname string
+var tagExcludeFilter string
 
 type handler struct {
 	*syslog.BaseHandler
@@ -18,10 +19,11 @@ type handler struct {
 
 func newHandler() *handler {
 	h := handler{syslog.NewBaseHandler(5, func(m *syslog.Message) bool {
-		if m.Hostname != hostname {
-			return true
+		match, _ := regexp.MatchString(tagExcludeFilter, m.Tag)
+		if match {
+			return false
 		}
-		return false
+		return true
 	}, false)}
 	go h.mainLoop()
 	return &h
@@ -41,6 +43,7 @@ func (h *handler) mainLoop() {
 
 func main() {
 	hostname, _ = os.Hostname()
+	tagExcludeFilter = os.Getenv("TAG_EXCLUDE_FILTER")
 	fmt.Println(hostname)
 	flag.Parse()
 	s := syslog.NewServer()
