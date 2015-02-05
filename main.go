@@ -41,6 +41,7 @@ func (h *handler) mainLoop() {
 
 func main() {
 	hostname, _ = os.Hostname()
+	fmt.Println(hostname)
 	flag.Parse()
 	s := syslog.NewServer()
 	s.AddHandler(newHandler())
