@@ -35,7 +35,7 @@ func main() {
 	flag.Parse()
 	s := syslog.NewServer()
 	s.AddHandler(newHandler())
-	s.Listen(flag.Arg(0))
+	s.Listen("0.0.0.0:1514")
 
 	// Wait for terminating signal
 	sc := make(chan os.Signal, 2)

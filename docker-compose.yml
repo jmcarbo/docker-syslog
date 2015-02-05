@@ -2,7 +2,6 @@ dockersyslog:
   image: jmcarbo/docker-syslog
   ports:
     - 55555:1514/udp
-  command: 0.0.0.0:1514
 logspout:
   image: progrium/logspout
   ports:
