@@ -1,0 +1,6 @@
+dockersyslog:
+  image: jmcarbo/docker-syslog:latest
+  ports:
+    - 55555:1514/udp
+  environment:
+    - TAG_EXCLUDE_FILTER: dockersyslog
